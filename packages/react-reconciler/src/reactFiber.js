@@ -2,12 +2,7 @@ import { Fiber } from "./reactInternalTypes";
 import { TypeOfMode } from "./reactTypeOfMode";
 import { WorkTag } from "./reactWorkTags";
 
-function FiberNode(
-    tag,
-    pengdingProps,
-    key,
-    mode
-) {
+function FiberNode(tag, pengdingProps, key, mode) {
     // Instance
     this.tag = tag;
     this.key = key;
@@ -36,3 +31,13 @@ const createFiber = function (tag, pendingProps, key, mode) {
     // $FlowFixMe: the shapes are exact here but Flow doesn't like constructors
     return new FiberNode(tag, pendingProps, key, mode);
 };
+
+//ReactNodeList:ReactNodeList
+ReactDOMHydrationRoot.prototype.render = ReactDOMRoot.prototype.render =
+    function (children) {
+        const root = this._internalRoot;
+        if (root === null) {
+            throw new Error("Cannot update an unmounted root.");
+        }
+        updateContainer(children, root, null, null);
+    };
