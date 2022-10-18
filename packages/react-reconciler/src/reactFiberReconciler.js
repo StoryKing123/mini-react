@@ -1,4 +1,4 @@
-// import createFiberRoot from './'
+import { createFiberRoot } from './reactFiberRoot'
 /**
  * 
  *     containerInfo,
@@ -33,6 +33,7 @@ export function createContainer(
 ) {
     const hydrate = false;
     const initialChildren = null;
+    // console.log(containerInfo)
     return createFiberRoot(
         containerInfo,
         tag,
@@ -60,20 +61,20 @@ export function createHydrationContainer(
     onRecoverableError,
     transitionCallbacks
 ) {
-    const hydrate = true;
-    const initialChildren = null;
-    const root = createFiberRoot(
-        containerInfo,
-        tag,
-        hydrate,
-        initialChildren,
-        hydrationCallbacks,
-        isStrictMode,
-        concurrentUpdatesByDefaultOverride,
-        identifierPrefix,
-        onRecoverableError,
-        transitionCallbacks
-    );
+    // const hydrate = true;
+    // const initialChildren = null;
+    // const root = createFiberRoot(
+    //     containerInfo,
+    //     tag,
+    //     hydrate,
+    //     initialChildren,
+    //     hydrationCallbacks,
+    //     isStrictMode,
+    //     concurrentUpdatesByDefaultOverride,
+    //     identifierPrefix,
+    //     onRecoverableError,
+    //     transitionCallbacks
+    // );
 
     // root.context = getContextForSubTree(null);
 
@@ -100,6 +101,13 @@ export function createHydrationContainer(
   ): Lane 
   */
 export function updateContainer(element, container, parentComponent, callback) {
+    console.log('start update')
+    console.log(element)
+    console.log(container)
+    console.log(parentComponent)
+    console.log(callback)
+
+    return
     const current = container.current;
     const eventTime = requestEventTime();
     const lane = requestUpdateLane(current);
@@ -121,7 +129,7 @@ export function updateContainer(element, container, parentComponent, callback) {
             if (typeof callback !== "function") {
                 console.error(
                     "render(...): Expected the last optional `callback` argument to be a " +
-                        "function. Instead received: %s.",
+                    "function. Instead received: %s.",
                     callback
                 );
             }

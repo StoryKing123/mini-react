@@ -1,3 +1,22 @@
+import { createHostRootFiber, createFiber } from './reactFiber'
+import { noTimeout, supportsHydration } from './ReactFiberHostConfig';
+import { ConcurrentMode, NoMode } from './reactTypeOfMode';
+import { HostRoot } from './reactWorkTags';
+import {
+    enableSuspenseCallback,
+    enableCache,
+    enableProfilerCommitHooks,
+    enableProfilerTimer,
+    enableUpdaterTracking,
+    enableTransitionTracing,
+} from '../../shared/reactFeaturesFlag'
+import {
+    NoLane,
+    NoLanes,
+    NoTimestamp,
+    // TotalLanes,
+    createLaneMap,
+} from './ReactFiberLane';
 /**
  *export function createFiberRoot(
     containerInfo,
@@ -14,7 +33,7 @@
     identifierPrefix,
     onRecoverableError,
     transitionCallbacks,
-  ): FiberRoot {
+  ){
 
   } 
  * @param {*} containerInfo 
@@ -58,6 +77,7 @@ export function createFiberRoot(
     );
     root.current = uninitializedFiber;
     uninitializedFiber.stateNode = root;
+    // todo
     // initializeUpdateQueue(uninitializedFiber);
     return root;
 }
@@ -134,16 +154,17 @@ function FiberRootNode(
         }
     }
 
-    if (__DEV__) {
-        switch (tag) {
-            case ConcurrentRoot:
-                this._debugRootType = hydrate
-                    ? "hydrateRoot()"
-                    : "createRoot()";
-                break;
-            case LegacyRoot:
-                this._debugRootType = hydrate ? "hydrate()" : "render()";
-                break;
-        }
-    }
+    // if (__DEV__) {
+    //     switch (tag) {
+    //         case ConcurrentRoot:
+    //             this._debugRootType = hydrate
+    //                 ? "hydrateRoot()"
+    //                 : "createRoot()";
+    //             break;
+    //         case LegacyRoot:
+    //             this._debugRootType = hydrate ? "hydrate()" : "render()";
+    //             break;
+    //     }
+    // }
 }
+

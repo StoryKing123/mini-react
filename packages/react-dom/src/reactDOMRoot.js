@@ -1,4 +1,4 @@
-import { createContainer } from "react-reconciler";
+import { createContainer, updateContainer } from "react-reconciler";
 export function createRootImpl(container, options) {
     const root = createContainer(container, options);
     // markContainerAsRoot(root.current, container);
@@ -19,3 +19,16 @@ export function createRootImpl(container, options) {
 function ReactDOMRoot(internalRoot) {
     this._internalRoot = internalRoot;
 }
+function ReactDOMHydrationRoot(internalRoot) {
+    this._internalRoot = internalRoot;
+}
+
+//ReactNodeList:ReactNodeList
+ReactDOMHydrationRoot.prototype.render = ReactDOMRoot.prototype.render =
+    function (children) {
+        const root = this._internalRoot;
+        if (root === null) {
+            throw new Error("Cannot update an unmounted root.");
+        }
+        updateContainer(children, root, null, null);
+    };

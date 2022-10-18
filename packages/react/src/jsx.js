@@ -1,3 +1,9 @@
+const supportSymbol = typeof Symbol === 'function' && Symbol.for;
+
+export const REACT_ELEMENT_TYPE = supportSymbol
+    ? Symbol.for('react.element')
+    : 0xeac7;
+
 const ReactElement = function (type, key, ref, props) {
     const element = {
         $$typeof: REACT_ELEMENT_TYPE,
@@ -19,7 +25,7 @@ function hasValidRef(config) {
     return config.ref !== undefined;
 }
 
-export const jsx = (type) => {
+export const jsx = (type, config) => {
     let key = null;
     const props = {};
     let ref = null;
@@ -64,7 +70,7 @@ export function isValidElement(object) {
 }
 
 // jsxDEV传入的后续几个参数与jsx不同
-export const jsxDEV = (type) => {
+export const jsxDEV = (type, config) => {
     let key = null;
     const props = {};
     let ref = null;
