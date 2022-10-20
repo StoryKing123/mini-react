@@ -1,7 +1,7 @@
-import { createHostRootFiber, createFiber } from './reactFiber'
-import { noTimeout, supportsHydration } from './ReactFiberHostConfig';
-import { ConcurrentMode, NoMode } from './reactTypeOfMode';
-import { HostRoot } from './reactWorkTags';
+import { createHostRootFiber, createFiber } from "./reactFiber";
+import { noTimeout, supportsHydration } from "./ReactFiberHostConfig";
+import { ConcurrentMode, NoMode } from "./reactTypeOfMode";
+import { HostRoot } from "./reactWorkTags";
 import {
     enableSuspenseCallback,
     enableCache,
@@ -9,14 +9,15 @@ import {
     enableProfilerTimer,
     enableUpdaterTracking,
     enableTransitionTracing,
-} from '../../shared/reactFeaturesFlag'
+} from "../../shared/reactFeaturesFlag";
 import {
     NoLane,
     NoLanes,
     NoTimestamp,
     // TotalLanes,
     createLaneMap,
-} from './ReactFiberLane';
+} from "./ReactFiberLane";
+import { initializeUpdateQueue } from "./reactFiberClassUpdateQueue";
 /**
  *export function createFiberRoot(
     containerInfo,
@@ -78,7 +79,7 @@ export function createFiberRoot(
     root.current = uninitializedFiber;
     uninitializedFiber.stateNode = root;
     // todo
-    // initializeUpdateQueue(uninitializedFiber);
+    initializeUpdateQueue(uninitializedFiber);
     return root;
 }
 
@@ -167,4 +168,3 @@ function FiberRootNode(
     //     }
     // }
 }
-

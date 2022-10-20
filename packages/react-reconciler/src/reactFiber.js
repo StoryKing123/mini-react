@@ -63,7 +63,6 @@ export function createHostRootFiber(
         mode = ConcurrentMode;
         if (isStrictMode === true) {
             mode |= StrictLegacyMode;
-
             if (enableStrictEffects) {
                 mode |= StrictEffectsMode;
             }

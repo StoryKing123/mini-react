@@ -1,3 +1,6 @@
+import { SyncLane } from "./ReactFiberLane";
+import { ConcurrentMode } from "./reactTypeOfMode";
+
 export const NoContext = /*             */ 0b000;
 const BatchedContext = /*               */ 0b001;
 const RenderContext = /*                */ 0b010;
@@ -81,6 +84,31 @@ export function requestEventTime() {
     // This is the first update since React yielded. Compute a new start time.
     currentEventTime = now();
     return currentEventTime;
+}
+let currentEventTime = NoTimestamp;
+let currentEventTransitionLane = NoLanes;
+
+export function requestUpdateLane(fiber) {
+    const mode = fiber.mode;
+    if ((mode & ConcurrentMode) === NoMode) {
+        return SyncLane;
+    }
+    //ignore else if
+
+    const isTransition = requestCurrentTransition() !== NoTransition;
+    if (isTransition) {
+        if (currentEventTransitionLane === NoLane) {
+            currentEventTransitionLane = claimNextTransitionLane();
+        }
+        return currentEventTransitionLane;
+    }
+    const updateLane = getCurrentUpdatePriority();
+    if (updateLane !== NoLane) {
+        return updateLane;
+    }
+
+    const eventLane = getCurrentEventPriority();
+    return eventLane;
 }
 
 function scheduleCallback(priorityLevel, callback) {

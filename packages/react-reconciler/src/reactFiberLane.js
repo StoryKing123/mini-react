@@ -40,7 +40,6 @@ const RetryLane3 = /*                             */ 0b0000001000000000000000000
 const RetryLane4 = /*                             */ 0b0000010000000000000000000000000;
 const RetryLane5 = /*                             */ 0b0000100000000000000000000000000;
 
-
 export const SomeRetryLane = RetryLane1;
 
 export const SelectiveHydrationLane = /*          */ 0b0001000000000000000000000000000;
@@ -54,6 +53,8 @@ export const OffscreenLane = /*                   */ 0b1000000000000000000000000
 
 export const NoTimestamp = -1;
 
+let nextTransitionLane = TransitionLane1;
+let nextRetryLane = RetryLane1;
 
 // export function createLaneMap<T>(initial: T)Map<T> {
 export function createLaneMap(initial) {
@@ -62,4 +63,16 @@ export function createLaneMap(initial) {
         laneMap.push(initial);
     }
     return laneMap;
+}
+
+export function claimNextTransitionLane() {
+    // Cycle through the lanes, assigning each new transition to the next lane.
+    // In most cases, this means every transition gets its own lane, until we
+    // run out of lanes and cycle back to the beginning.
+    const lane = nextTransitionLane;
+    nextTransitionLane <<= 1;
+    if ((nextTransitionLane & TransitionLanes) === NoLanes) {
+        nextTransitionLane = TransitionLane1;
+    }
+    return lane;
 }

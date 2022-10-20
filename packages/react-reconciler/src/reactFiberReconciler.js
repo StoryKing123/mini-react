@@ -1,4 +1,5 @@
-import { createFiberRoot } from './reactFiberRoot'
+import { createFiberRoot } from "./reactFiberRoot";
+import { requestEventTime } from "./reactFiberWorkLoop";
 /**
  * 
  *     containerInfo,
@@ -101,13 +102,13 @@ export function createHydrationContainer(
   ): Lane 
   */
 export function updateContainer(element, container, parentComponent, callback) {
-    console.log('start update')
-    console.log(element)
-    console.log(container)
-    console.log(parentComponent)
-    console.log(callback)
+    console.log("start update");
+    console.log(element);
+    console.log(container);
+    console.log(parentComponent);
+    console.log(callback);
 
-    return
+    // return
     const current = container.current;
     const eventTime = requestEventTime();
     const lane = requestUpdateLane(current);
@@ -129,7 +130,7 @@ export function updateContainer(element, container, parentComponent, callback) {
             if (typeof callback !== "function") {
                 console.error(
                     "render(...): Expected the last optional `callback` argument to be a " +
-                    "function. Instead received: %s.",
+                        "function. Instead received: %s.",
                     callback
                 );
             }

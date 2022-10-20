@@ -1,8 +1,8 @@
 import { createContainer, updateContainer } from "react-reconciler";
+import { markContainerAsRoot } from "./client/reactDOMComponentTree";
 export function createRootImpl(container, options) {
     const root = createContainer(container, options);
-    // markContainerAsRoot(root.current, container);
-    // let root = cont
+    markContainerAsRoot(root.current, container);
     //事件相关，暂不处理
     //     const rootContainerElement: Document | Element | DocumentFragment =
     //     container.nodeType === COMMENT_NODE
