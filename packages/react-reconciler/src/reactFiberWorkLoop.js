@@ -1,5 +1,7 @@
-import { SyncLane } from "./ReactFiberLane";
+import { SyncLane, claimNextTransitionLane } from "./ReactFiberLane";
 import { ConcurrentMode } from "./reactTypeOfMode";
+import { requestCurrentTransition } from "./reactFiberTransition";
+import { getCurrentUpdatePriority } from "./reactEventPriorities";
 
 export const NoContext = /*             */ 0b000;
 const BatchedContext = /*               */ 0b001;
@@ -113,4 +115,16 @@ export function requestUpdateLane(fiber) {
 
 function scheduleCallback(priorityLevel, callback) {
     return Scheduler_scheduleCallback(priorityLevel, callback);
+}
+
+export function isUnsafeClassRenderPhaseUpdate(fiber) {
+    // Check if this is a render phase update. Only called by class components,
+    // which special (deprecated) behavior for UNSAFE_componentWillReceive props.
+    return (
+        // TODO: Remove outdated deferRenderPhaseUpdateToNextBatch experiment. We
+        // decided not to enable it.
+        (!deferRenderPhaseUpdateToNextBatch ||
+            (fiber.mode & ConcurrentMode) === NoMode) &&
+        (executionContext & RenderContext) !== NoContext
+    );
 }

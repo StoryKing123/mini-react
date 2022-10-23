@@ -1,5 +1,11 @@
 import { createFiberRoot } from "./reactFiberRoot";
-import { requestEventTime } from "./reactFiberWorkLoop";
+import { requestEventTime, requestUpdateLane } from "./reactFiberWorkLoop";
+import {
+    findCurrentUnmaskedContext,
+    isContextProvider as isLegacyContextProvider,
+} from "./reactFiberContext";
+import { get as getInstance } from "shared/ReactInstanceMap";
+import { createUpdate } from "./reactFiberClassUpdateQueue";
 /**
  * 
  *     containerInfo,
@@ -92,6 +98,24 @@ export function createHydrationContainer(
 
     return root;
     // schene
+}
+
+// function getContextForSubtree(
+//     parentComponent: ?React$Component<any, any>,
+//   ): Object {
+function getContextForSubtree(parentComponent) {
+    if (!parentComponent) {
+        return emptyContextObject;
+    }
+    const fiber = getInstance(parentComponent);
+    const parentContext = findCurrentUnmaskedContext(fiber);
+    if (fiber.tag === ClassComponent) {
+        const Component = fiber.type;
+        if (isLegacyContextProvider(Component)) {
+            return processChildContext(fiber, Component, parentContext);
+        }
+    }
+    return parentContext;
 }
 
 /**export function updateContainer(

@@ -1,4 +1,4 @@
-import { DefaultEventPriority } from "./ReactEventPriorities";
+import { DefaultEventPriority } from "./reactEventPriorities";
 export const noTimeout = -1;
 export const supportsHydration = true;
 
