@@ -5,7 +5,7 @@ import {
     isContextProvider as isLegacyContextProvider,
 } from "./reactFiberContext";
 import { get as getInstance } from "shared/ReactInstanceMap";
-import { createUpdate } from "./reactFiberClassUpdateQueue";
+import { createUpdate, enqueueUpdate } from "./reactFiberClassUpdateQueue";
 /**
  * 
  *     containerInfo,
