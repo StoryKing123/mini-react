@@ -1,7 +1,20 @@
-import { SyncLane, claimNextTransitionLane } from "./ReactFiberLane";
-import { ConcurrentMode } from "./reactTypeOfMode";
+import {
+    SyncLane,
+    claimNextTransitionLane,
+    markRootUpdated,
+    mergeLanes,
+    removeLanes,
+    addFiberToLanesMap,
+} from "./ReactFiberLane";
+import { ConcurrentMode, NoMode } from "./reactTypeOfMode";
 import { requestCurrentTransition } from "./reactFiberTransition";
 import { getCurrentUpdatePriority } from "./reactEventPriorities";
+import {
+    cancelCallback,
+    deferRenderPhaseUpdateToNextBatch,
+    now,
+} from "schedule";
+import ReactSharedInternals from "shared/ReactSharedInternals";
 
 export const NoContext = /*             */ 0b000;
 const BatchedContext = /*               */ 0b001;
@@ -15,6 +28,13 @@ const RootSuspended = 3;
 const RootSuspendedWithDelay = 4;
 const RootCompleted = 5;
 const RootDidNotComplete = 6;
+
+const {
+    ReactCurrentDispatcher,
+    ReactCurrentOwner,
+    ReactCurrentBatchConfig,
+    ReactCurrentActQueue,
+} = ReactSharedInternals;
 
 // Describes where we are in the React execution stack
 let executionContext = NoContext;
@@ -147,7 +167,7 @@ export function scheduleUpdateOnFiber(root, fiber, lane, eventTime) {
         // hook updates, which are handled differently and don't reach this
         // function), but there are some internal React features that use this as
         // an implementation detail, like selective hydration.
-        warnAboutRenderPhaseUpdatesInDEV(fiber);
+        // warnAboutRenderPhaseUpdatesInDEV(fiber);
 
         // Track lanes that were updated during the render phase
         workInProgressRootRenderPhaseUpdatedLanes = mergeLanes(
@@ -162,39 +182,7 @@ export function scheduleUpdateOnFiber(root, fiber, lane, eventTime) {
                 addFiberToLanesMap(root, fiber, lane);
             }
         }
-        warnIfUpdatesNotWrappedWithActDEV(fiber);
-
-        if (enableProfilerTimer && enableProfilerNestedUpdateScheduledHook) {
-            if (
-                (executionContext & CommitContext) !== NoContext &&
-                root === rootCommittingMutationOrLayoutEffects
-            ) {
-                if (fiber.mode & ProfileMode) {
-                    let current = fiber;
-                    while (current !== null) {
-                        if (current.tag === Profiler) {
-                            const { id, onNestedUpdateScheduled } =
-                                current.memoizedProps;
-                            if (typeof onNestedUpdateScheduled === "function") {
-                                onNestedUpdateScheduled(id);
-                            }
-                        }
-                        current = current.return;
-                    }
-                }
-            }
-        }
-
-        if (enableTransitionTracing) {
-            const transition = ReactCurrentBatchConfig.transition;
-            if (transition !== null && transition.name != null) {
-                if (transition.startTime === -1) {
-                    transition.startTime = now();
-                }
-
-                addTransitionToLanesMap(root, transition, lane);
-            }
-        }
+        // warnIfUpdatesNotWrappedWithActDEV(fiber);
 
         if (root === workInProgressRoot) {
             // Received an update to a tree that's in the middle of rendering. Mark
@@ -228,7 +216,7 @@ export function scheduleUpdateOnFiber(root, fiber, lane, eventTime) {
             executionContext === NoContext &&
             (fiber.mode & ConcurrentMode) === NoMode &&
             // Treat `act` as if it's inside `batchedUpdates`, even in legacy mode.
-            !(__DEV__ && ReactCurrentActQueue.isBatchingLegacy)
+            !ReactCurrentActQueue.isBatchingLegacy
         ) {
             // Flush the synchronous work now, unless we're already working or inside
             // a batch. This is intentionally inside scheduleUpdateOnFiber instead of
@@ -239,4 +227,163 @@ export function scheduleUpdateOnFiber(root, fiber, lane, eventTime) {
             flushSyncCallbacksOnlyInLegacyMode();
         }
     }
+}
+
+// Use this function to schedule a task for a root. There's only one task per
+// root; if a task was already scheduled, we'll check to make sure the priority
+// of the existing task is the same as the priority of the next level that the
+// root has work on. This function is called on every update, and right before
+// exiting a task.
+//function ensureRootIsScheduled(root: FiberRoot, currentTime: number)
+function ensureRootIsScheduled(root, currentTime) {
+    const existingCallbackNode = root.callbackNode;
+
+    // Check if any lanes are being starved by other work. If so, mark them as
+    // expired so we know to work on those next.
+    markStarvedLanesAsExpired(root, currentTime);
+
+    // Determine the next lanes to work on, and their priority.
+    const nextLanes = getNextLanes(
+        root,
+        root === workInProgressRoot ? workInProgressRootRenderLanes : NoLanes
+    );
+
+    if (nextLanes === NoLanes) {
+        // Special case: There's nothing to work on.
+        if (existingCallbackNode !== null) {
+            cancelCallback(existingCallbackNode);
+        }
+        root.callbackNode = null;
+        root.callbackPriority = NoLane;
+        return;
+    }
+
+    // We use the highest priority lane to represent the priority of the callback.
+    const newCallbackPriority = getHighestPriorityLane(nextLanes);
+
+    // Check if there's an existing task. We may be able to reuse it.
+    const existingCallbackPriority = root.callbackPriority;
+    if (
+        existingCallbackPriority === newCallbackPriority &&
+        // Special case related to `act`. If the currently scheduled task is a
+        // Scheduler task, rather than an `act` task, cancel it and re-scheduled
+        // on the `act` queue.
+        !(
+            __DEV__ &&
+            ReactCurrentActQueue.current !== null &&
+            existingCallbackNode !== fakeActCallbackNode
+        )
+    ) {
+        if (__DEV__) {
+            // If we're going to re-use an existing task, it needs to exist.
+            // Assume that discrete update microtasks are non-cancellable and null.
+            // TODO: Temporary until we confirm this warning is not fired.
+            if (
+                existingCallbackNode == null &&
+                existingCallbackPriority !== SyncLane
+            ) {
+                console.error(
+                    "Expected scheduled callback to exist. This error is likely caused by a bug in React. Please file an issue."
+                );
+            }
+        }
+        // The priority hasn't changed. We can reuse the existing task. Exit.
+        return;
+    }
+
+    if (existingCallbackNode != null) {
+        // Cancel the existing callback. We'll schedule a new one below.
+        cancelCallback(existingCallbackNode);
+    }
+
+    // Schedule a new callback.
+    let newCallbackNode;
+    if (newCallbackPriority === SyncLane) {
+        // Special case: Sync React callbacks are scheduled on a special
+        // internal queue
+        if (root.tag === LegacyRoot) {
+            // if (__DEV__ && ReactCurrentActQueue.isBatchingLegacy !== null) {
+            //     ReactCurrentActQueue.didScheduleLegacyUpdate = true;
+            // }
+            scheduleLegacySyncCallback(performSyncWorkOnRoot.bind(null, root));
+        } else {
+            scheduleSyncCallback(performSyncWorkOnRoot.bind(null, root));
+        }
+        if (supportsMicrotasks) {
+            // Flush the queue in a microtask.
+            if (__DEV__ && ReactCurrentActQueue.current !== null) {
+                // Inside `act`, use our internal `act` queue so that these get flushed
+                // at the end of the current scope even when using the sync version
+                // of `act`.
+                ReactCurrentActQueue.current.push(flushSyncCallbacks);
+            } else {
+                scheduleMicrotask(() => {
+                    // In Safari, appending an iframe forces microtasks to run.
+                    // https://github.com/facebook/react/issues/22459
+                    // We don't support running callbacks in the middle of render
+                    // or commit so we need to check against that.
+                    if (
+                        (executionContext & (RenderContext | CommitContext)) ===
+                        NoContext
+                    ) {
+                        // Note that this would still prematurely flush the callbacks
+                        // if this happens outside render or commit phase (e.g. in an event).
+                        flushSyncCallbacks();
+                    }
+                });
+            }
+        } else {
+            // Flush the queue in an Immediate task.
+            scheduleCallback(ImmediateSchedulerPriority, flushSyncCallbacks);
+        }
+        newCallbackNode = null;
+    } else {
+        let schedulerPriorityLevel;
+        switch (lanesToEventPriority(nextLanes)) {
+            case DiscreteEventPriority:
+                schedulerPriorityLevel = ImmediateSchedulerPriority;
+                break;
+            case ContinuousEventPriority:
+                schedulerPriorityLevel = UserBlockingSchedulerPriority;
+                break;
+            case DefaultEventPriority:
+                schedulerPriorityLevel = NormalSchedulerPriority;
+                break;
+            case IdleEventPriority:
+                schedulerPriorityLevel = IdleSchedulerPriority;
+                break;
+            default:
+                schedulerPriorityLevel = NormalSchedulerPriority;
+                break;
+        }
+        newCallbackNode = scheduleCallback(
+            schedulerPriorityLevel,
+            performConcurrentWorkOnRoot.bind(null, root)
+        );
+    }
+
+    root.callbackPriority = newCallbackPriority;
+    root.callbackNode = newCallbackNode;
+}
+
+function cancelCallback(callbackNode) {
+    // In production, always call Scheduler. This function will be stripped out.
+    return Scheduler_cancelCallback(callbackNode);
+}
+
+function markRootSuspended(root, suspendedLanes) {
+    // When suspending, we should always exclude lanes that were pinged or (more
+    // rarely, since we try to avoid it) updated during the render phase.
+    // TODO: Lol maybe there's a better way to factor this besides this
+    // obnoxiously named function :)
+    suspendedLanes = removeLanes(suspendedLanes, workInProgressRootPingedLanes);
+    suspendedLanes = removeLanes(
+        suspendedLanes,
+        workInProgressRootInterleavedUpdatedLanes
+    );
+    markRootSuspended_dontCallThisOneDirectly(root, suspendedLanes);
+}
+
+function resetRenderTimer() {
+    workInProgressRootRenderTargetTime = now() + RENDER_TIMEOUT_MS;
 }

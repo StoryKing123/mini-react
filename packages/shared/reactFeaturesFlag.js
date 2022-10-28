@@ -6,3 +6,4 @@ export const enableProfilerTimer = false;
 export const enableUpdaterTracking = false;
 export const enableTransitionTracing = false;
 export const disableLegacyContext = false;
+export const deferRenderPhaseUpdateToNextBatch = false;

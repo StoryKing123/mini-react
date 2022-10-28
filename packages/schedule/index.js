@@ -16,6 +16,7 @@ import {
     frameYieldMs,
     continuousYieldMs,
     maxYieldMs,
+    deferRenderPhaseUpdateToNextBatch,
 } from "../SchedulerFeatureFlags";
 
 import { push, pop, peek } from "../SchedulerMinHeap";
@@ -628,6 +629,7 @@ export {
     unstable_getFirstCallbackNode,
     getCurrentTime as unstable_now,
     forceFrameRate as unstable_forceFrameRate,
+    deferRenderPhaseUpdateToNextBatch,
 };
 
 export const unstable_Profiling = enableProfiling
