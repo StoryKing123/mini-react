@@ -1,5 +1,5 @@
 import { createFiberRoot } from "./reactFiberRoot";
-import { requestEventTime, requestUpdateLane } from "./reactFiberWorkLoop";
+import { requestEventTime, requestUpdateLane,scheduleUpdateOnFiber } from "./reactFiberWorkLoop";
 import {
     findCurrentUnmaskedContext,
     isContextProvider as isLegacyContextProvider,

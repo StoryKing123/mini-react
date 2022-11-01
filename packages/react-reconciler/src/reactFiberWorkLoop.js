@@ -224,7 +224,7 @@ export function scheduleUpdateOnFiber(root, fiber, lane, eventTime) {
             // without immediately flushing it. We only do this for user-initiated
             // updates, to preserve historical behavior of legacy mode.
             resetRenderTimer();
-            flushSyncCallbacksOnlyInLegacyMode();
+            // flushSyncCallbacksOnlyInLegacyMode();
         }
     }
 }

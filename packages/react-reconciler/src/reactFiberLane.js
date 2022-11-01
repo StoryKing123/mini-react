@@ -249,3 +249,43 @@ export function addFiberToLanesMap(root, fiber, lanes) {
         lanes &= ~lane;
     }
 }
+
+export function isTransitionLane(lane) {
+    return (lane & TransitionLanes) !== NoLanes;
+}
+
+/**
+ *
+ * @param {*} root FiberRoot
+ * @param {*} entangledLanes Lanes
+ */
+export function markRootEntangled(root, entangledLanes) {
+    // In addition to entangling each of the given lanes with each other, we also
+    // have to consider _transitive_ entanglements. For each lane that is already
+    // entangled with *any* of the given lanes, that lane is now transitively
+    // entangled with *all* the given lanes.
+    //
+    // Translated: If C is entangled with A, then entangling A with B also
+    // entangles C with B.
+    //
+    // If this is hard to grasp, it might help to intentionally break this
+    // function and look at the tests that fail in ReactTransition-test.js. Try
+    // commenting out one of the conditions below.
+
+    const rootEntangledLanes = (root.entangledLanes |= entangledLanes);
+    const entanglements = root.entanglements;
+    let lanes = rootEntangledLanes;
+    while (lanes) {
+        const index = pickArbitraryLaneIndex(lanes);
+        const lane = 1 << index;
+        if (
+            // Is this one of the newly entangled lanes?
+            (lane & entangledLanes) |
+            // Is this lane transitively entangled with the newly entangled lanes?
+            (entanglements[index] & entangledLanes)
+        ) {
+            entanglements[index] |= entangledLanes;
+        }
+        lanes &= ~lane;
+    }
+}
