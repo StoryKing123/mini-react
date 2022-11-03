@@ -5,10 +5,17 @@ import {
     mergeLanes,
     removeLanes,
     addFiberToLanesMap,
+    NoTimestamp,
+    NoLanes,
+    NoLane,
 } from "./ReactFiberLane";
+import { getCurrentEventPriority } from "./reactFiberHostConfig";
 import { ConcurrentMode, NoMode } from "./reactTypeOfMode";
-import { requestCurrentTransition } from "./reactFiberTransition";
-import { getCurrentUpdatePriority } from "./reactEventPriorities";
+import { requestCurrentTransition, NoTransition } from "./reactFiberTransition";
+import {
+    getCurrentUpdatePriority,
+    getCurrentUpdatePriority,
+} from "./reactEventPriorities";
 import {
     cancelCallback,
     deferRenderPhaseUpdateToNextBatch,
@@ -85,6 +92,7 @@ let workInProgressRootRenderTargetTime = Infinity;
 // How long a render is supposed to take before we start following CPU
 // suspense heuristics and opt out of rendering more content.
 const RENDER_TIMEOUT_MS = 500;
+let nestedUpdateCount = 0;
 
 let workInProgressTransitions = null;
 export function getWorkInProgressTransitions() {
@@ -386,4 +394,20 @@ function markRootSuspended(root, suspendedLanes) {
 
 function resetRenderTimer() {
     workInProgressRootRenderTargetTime = now() + RENDER_TIMEOUT_MS;
+}
+
+export function throwIfInfiniteUpdateLoopDetected() {
+    if (nestedUpdateCount > NESTED_UPDATE_LIMIT) {
+        nestedUpdateCount = 0;
+        nestedPassiveUpdateCount = 0;
+        rootWithNestedUpdates = null;
+        rootWithPassiveNestedUpdates = null;
+
+        throw new Error(
+            "Maximum update depth exceeded. This can happen when a component " +
+                "repeatedly calls setState inside componentWillUpdate or " +
+                "componentDidUpdate. React limits the number of nested updates to " +
+                "prevent infinite loops."
+        );
+    }
 }

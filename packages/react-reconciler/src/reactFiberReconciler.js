@@ -1,11 +1,19 @@
 import { createFiberRoot } from "./reactFiberRoot";
-import { requestEventTime, requestUpdateLane,scheduleUpdateOnFiber } from "./reactFiberWorkLoop";
+import {
+    requestEventTime,
+    requestUpdateLane,
+    scheduleUpdateOnFiber,
+} from "./reactFiberWorkLoop";
 import {
     findCurrentUnmaskedContext,
     isContextProvider as isLegacyContextProvider,
 } from "./reactFiberContext";
-import { get as getInstance } from "shared/ReactInstanceMap";
-import { createUpdate, enqueueUpdate } from "./reactFiberClassUpdateQueue";
+import { get as getInstance } from "shared/reactInstanceMap";
+import {
+    createUpdate,
+    enqueueUpdate,
+    entangleTransitions,
+} from "./reactFiberClassUpdateQueue";
 /**
  * 
  *     containerInfo,

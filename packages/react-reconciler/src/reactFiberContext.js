@@ -1,5 +1,5 @@
-import { disableLegacyContext } from "shared/ReactFeatureFlags";
-import { ClassComponent, HostRoot } from "./ReactWorkTags";
+import { disableLegacyContext } from "shared/reactFeatureFlags";
+import { ClassComponent, HostRoot } from "./reactWorkTags";
 
 export const emptyContextObject = {};
 

@@ -1,5 +1,6 @@
 //function initializeUpdateQueue<State>(fiber: Fiber): void
 import { isUnsafeClassRenderPhaseUpdate } from "./reactFiberWorkLoop";
+import { unsafe_markUpdateLaneFromFiberToRoot,enqueueConcurrentClassUpdate } from "./reactFiberConcurrentUpdates";
 import {
     isTransitionLane,
     mergeLanes,
