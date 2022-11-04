@@ -5,7 +5,7 @@ import {
     LowPriority as LowSchedulerPriority,
     NormalPriority as NormalSchedulerPriority,
     UserBlockingPriority as UserBlockingSchedulerPriority,
-} from "react-reconciler/src/Scheduler";
+} from "react-reconciler/src/scheduler";
 export function getEventPriority(domEventName) {
     switch (domEventName) {
         // Used by SimpleEventPlugin:

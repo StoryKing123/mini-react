@@ -1,1 +1,1 @@
-export * from "./reactFeaturesFlag";
+export * from "./reactFeatureFlags";

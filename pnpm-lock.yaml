@@ -25,16 +25,39 @@ importers:
       vite: registry.npmmirror.com/vite/3.1.8
 
   packages/react:
-    specifiers: {}
+    specifiers:
+      shared: workspace:*
+    dependencies:
+      shared: link:../shared
 
   packages/react-dom:
     specifiers:
       react-reconciler: workspace:*
+      shared: workspace:*
     dependencies:
       react-reconciler: link:../react-reconciler
+      shared: link:../shared
 
   packages/react-reconciler:
+    specifiers:
+      react: workspace:*
+      react-dom: workspace:*
+      scheduler: workspace:*
+      shared: workspace:*
+    dependencies:
+      react: link:../react
+      react-dom: link:../react-dom
+      scheduler: link:../scheduler
+      shared: link:../shared
+
+  packages/scheduler:
     specifiers: {}
+
+  packages/shared:
+    specifiers:
+      react: workspace:*
+    dependencies:
+      react: link:../react
 
 packages:
 

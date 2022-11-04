@@ -9,7 +9,7 @@ import {
     enableProfilerTimer,
     enableUpdaterTracking,
     enableTransitionTracing,
-} from "../../shared/reactFeaturesFlag";
+} from "shared/reactFeatureFlags";
 import {
     NoLane,
     NoLanes,

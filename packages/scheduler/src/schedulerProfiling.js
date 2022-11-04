@@ -1,4 +1,4 @@
-import { enableProfiling } from "./SchedulerFeatureFlags";
+import { enableProfiling } from "./schedulerFeatureFlags";
 
 let runIdCounter = 0;
 let mainThreadIdCounter = 0;

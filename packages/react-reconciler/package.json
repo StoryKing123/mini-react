@@ -4,8 +4,10 @@
     "description": "",
     "main": "index.js",
     "dependencies": {
-    },
-    "peerDependencies": {
+        "shared": "workspace:*",
+        "scheduler": "workspace:*",
+        "react-dom": "workspace:*",
         "react": "workspace:*"
-    }
+    },
+    "peerDependencies": {}
 }

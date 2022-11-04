@@ -4,5 +4,6 @@
     "description": "React主模块",
     "module": "index.js",
     "dependencies": {
+        "shared": "workspace:*"
     }
 }

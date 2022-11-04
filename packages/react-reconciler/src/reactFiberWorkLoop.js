@@ -12,16 +12,14 @@ import {
 import { getCurrentEventPriority } from "./reactFiberHostConfig";
 import { ConcurrentMode, NoMode } from "./reactTypeOfMode";
 import { requestCurrentTransition, NoTransition } from "./reactFiberTransition";
+import { getCurrentUpdatePriority } from "./reactEventPriorities";
 import {
-    getCurrentUpdatePriority,
-    getCurrentUpdatePriority,
-} from "./reactEventPriorities";
-import {
-    cancelCallback,
-    deferRenderPhaseUpdateToNextBatch,
+    scheduleCallback as Scheduler_scheduleCallback,
+    cancelCallback as Scheduler_cancelCallback,
     now,
-} from "schedule";
-import ReactSharedInternals from "shared/ReactSharedInternals";
+} from "./scheduler";
+import { deferRenderPhaseUpdateToNextBatch } from "shared/reactFeatureFlags";
+import ReactSharedInternals from "shared/reactSharedInternals";
 
 export const NoContext = /*             */ 0b000;
 const BatchedContext = /*               */ 0b001;

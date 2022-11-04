@@ -1,5 +1,5 @@
 import { createContainer, updateContainer } from "react-reconciler";
-import { markContainerAsRoot } from "./client/reactDOMComponentTree";
+import { markContainerAsRoot } from "./reactDOMComponentTree";
 export function createRootImpl(container, options) {
     const root = createContainer(container, options);
     markContainerAsRoot(root.current, container);

@@ -17,9 +17,9 @@ import {
     continuousYieldMs,
     maxYieldMs,
     deferRenderPhaseUpdateToNextBatch,
-} from "../SchedulerFeatureFlags";
+} from "./src/schedulerFeatureFlags";
 
-import { push, pop, peek } from "../SchedulerMinHeap";
+import { push, pop, peek } from "./src/schedulerMinHeap";
 
 // TODO: Use symbols?
 import {
@@ -28,7 +28,7 @@ import {
     NormalPriority,
     LowPriority,
     IdlePriority,
-} from "../SchedulerPriorities";
+} from "./src/schedulerPriorities";
 import {
     markTaskRun,
     markTaskYield,
@@ -40,7 +40,7 @@ import {
     markTaskStart,
     stopLoggingProfilingEvents,
     startLoggingProfilingEvents,
-} from "../SchedulerProfiling";
+} from "./src/schedulerProfiling";
 
 let getCurrentTime;
 const hasPerformanceNow =
