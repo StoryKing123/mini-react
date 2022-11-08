@@ -3,6 +3,7 @@ import {
     requestEventTime,
     requestUpdateLane,
     scheduleUpdateOnFiber,
+    batchedUpdates as batchedUpdatesNew,
 } from "./reactFiberWorkLoop";
 import {
     findCurrentUnmaskedContext,
@@ -14,6 +15,7 @@ import {
     enqueueUpdate,
     entangleTransitions,
 } from "./reactFiberClassUpdateQueue";
+
 /**
  * 
  *     containerInfo,
@@ -178,3 +180,6 @@ export function updateContainer(element, container, parentComponent, callback) {
 
     return lane;
 }
+
+export const batchedUpdates = batchedUpdatesNew;
+// export { batchedUpdates };

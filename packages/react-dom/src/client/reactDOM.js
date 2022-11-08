@@ -9,6 +9,7 @@ import {
     enqueueStateRestore,
     restoreStateIfNeeded,
 } from "../events/reactDOMControlledComponent";
+import { batchedUpdates } from "react-reconciler/src/ReactFiberReconciler";
 
 const Internals = {
     usingClientEntryPoint: false,

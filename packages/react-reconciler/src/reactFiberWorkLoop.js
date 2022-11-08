@@ -409,3 +409,30 @@ export function throwIfInfiniteUpdateLoopDetected() {
         );
     }
 }
+
+/**
+ * function batchedUpdates<A, R>(fn: A => R, a: A): R
+ * @param {*} fn
+ * @param {*} R
+ * @param {*} a
+ * @returns
+ */
+export function batchedUpdates(fn, a) {
+    const prevExecutionContext = executionContext;
+    executionContext |= BatchedContext;
+    try {
+        return fn(a);
+    } finally {
+        executionContext = prevExecutionContext;
+        // If there were legacy sync updates, flush them at the end of the outer
+        // most batchedUpdates-like method.
+        if (
+            executionContext === NoContext &&
+            // Treat `act` as if it's inside `batchedUpdates`, even in legacy mode.
+            !(__DEV__ && ReactCurrentActQueue.isBatchingLegacy)
+        ) {
+            resetRenderTimer();
+            flushSyncCallbacksOnlyInLegacyMode();
+        }
+    }
+}
