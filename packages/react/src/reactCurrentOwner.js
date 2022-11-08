@@ -3,7 +3,7 @@ const ReactCurrentOwner = {
      * @internal
      * @type {ReactComponent}
      */
-    current,
+    current: null,
 };
 
 export default ReactCurrentOwner;

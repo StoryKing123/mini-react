@@ -1,4 +1,14 @@
 import { createRootImpl } from "./reactDOMRoot";
+import {
+    getInstanceFromNode,
+    getNodeFromInstance,
+    getFiberCurrentPropsFromNode,
+    getClosestInstanceFromNode,
+} from "./reactDOMComponentTree";
+import {
+    enqueueStateRestore,
+    restoreStateIfNeeded,
+} from "../events/reactDOMControlledComponent";
 
 const Internals = {
     usingClientEntryPoint: false,
@@ -13,6 +23,7 @@ const Internals = {
         batchedUpdates,
     ],
 };
+
 export function createRoot(container, options) {
     return createRootImpl(container, options);
 }

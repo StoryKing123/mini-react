@@ -8,7 +8,6 @@ importers:
       '@rollup/plugin-commonjs': ^23.0.0
       '@rollup/plugin-node-resolve': ^15.0.0
       '@rollup/plugin-replace': ^5.0.0
-      '@types/react': ^18.0.21
       '@vitejs/plugin-react': ^2.1.0
       rollup: ^3.2.1
       rollup-plugin-generate-package-json: ^3.2.0
@@ -18,7 +17,6 @@ importers:
       '@rollup/plugin-commonjs': registry.npmmirror.com/@rollup/plugin-commonjs/23.0.0_rollup@3.2.1
       '@rollup/plugin-node-resolve': registry.npmmirror.com/@rollup/plugin-node-resolve/15.0.0_rollup@3.2.1
       '@rollup/plugin-replace': registry.npmmirror.com/@rollup/plugin-replace/5.0.0_rollup@3.2.1
-      '@types/react': registry.npmmirror.com/@types/react/18.0.21
       '@vitejs/plugin-react': registry.npmmirror.com/@vitejs/plugin-react/2.1.0_vite@3.1.8
       rollup: registry.npmmirror.com/rollup/3.2.1
       rollup-plugin-generate-package-json: registry.npmmirror.com/rollup-plugin-generate-package-json/3.2.0_rollup@3.2.1
@@ -561,32 +559,10 @@ packages:
     version: 2.4.1
     dev: true
 
-  registry.npmmirror.com/@types/prop-types/15.7.5:
-    resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/prop-types/-/prop-types-15.7.5.tgz}
-    name: '@types/prop-types'
-    version: 15.7.5
-    dev: true
-
-  registry.npmmirror.com/@types/react/18.0.21:
-    resolution: {integrity: sha512-7QUCOxvFgnD5Jk8ZKlUAhVcRj7GuJRjnjjiY/IUBWKgOlnvDvTMLD4RTF7NPyVmbRhNrbomZiOepg7M/2Kj1mA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/react/-/react-18.0.21.tgz}
-    name: '@types/react'
-    version: 18.0.21
-    dependencies:
-      '@types/prop-types': registry.npmmirror.com/@types/prop-types/15.7.5
-      '@types/scheduler': registry.npmmirror.com/@types/scheduler/0.16.2
-      csstype: registry.npmmirror.com/csstype/3.1.1
-    dev: true
-
   registry.npmmirror.com/@types/resolve/1.20.2:
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/resolve/-/resolve-1.20.2.tgz}
     name: '@types/resolve'
     version: 1.20.2
-    dev: true
-
-  registry.npmmirror.com/@types/scheduler/0.16.2:
-    resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/scheduler/-/scheduler-0.16.2.tgz}
-    name: '@types/scheduler'
-    version: 0.16.2
     dev: true
 
   registry.npmmirror.com/@vitejs/plugin-react/2.1.0_vite@3.1.8:
@@ -694,12 +670,6 @@ packages:
     resolution: {integrity: sha512-ASFBup0Mz1uyiIjANan1jzLQami9z1PoYSZCiiYW2FczPbenXc45FZdBZLzOT+r6+iciuEModtmCti+hjaAk0A==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/convert-source-map/-/convert-source-map-1.9.0.tgz}
     name: convert-source-map
     version: 1.9.0
-    dev: true
-
-  registry.npmmirror.com/csstype/3.1.1:
-    resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/csstype/-/csstype-3.1.1.tgz}
-    name: csstype
-    version: 3.1.1
     dev: true
 
   registry.npmmirror.com/debug/4.3.4:

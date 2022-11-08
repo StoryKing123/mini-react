@@ -3,7 +3,7 @@ const ReactCurrentDispatcher = {
      * @internal
      * @type {ReactComponent}
      */
-    current,
+    current: null,
 };
 
 export default ReactCurrentDispatcher;
