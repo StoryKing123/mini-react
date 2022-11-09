@@ -8,6 +8,7 @@ import {
     NoTimestamp,
     NoLanes,
     NoLane,
+    markStarvedLanesAsExpired
 } from "./ReactFiberLane";
 import { getCurrentEventPriority } from "./reactFiberHostConfig";
 import { ConcurrentMode, NoMode } from "./reactTypeOfMode";
@@ -183,7 +184,8 @@ export function scheduleUpdateOnFiber(root, fiber, lane, eventTime) {
     } else {
         // This is a normal update, scheduled from outside the render phase. For
         // example, during an input event.
-        if (enableUpdaterTracking) {
+        // if (enableUpdaterTracking) {
+        if (false) {
             if (isDevToolsPresent) {
                 addFiberToLanesMap(root, fiber, lane);
             }

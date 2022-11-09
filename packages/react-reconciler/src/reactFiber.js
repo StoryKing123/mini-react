@@ -1,7 +1,9 @@
 // import { Fiber } from "./reactInternalTypes";
 import { NoMode, ConcurrentMode } from "./reactTypeOfMode";
 import { HostRoot } from "./reactWorkTags";
-import { ConcurrentRoot } from './reactRootTags'
+import { ConcurrentRoot } from "./reactRootTags";
+import { NoFlags } from "./reactFiberFlags";
+import { NoLanes } from "./reactFiberLane";
 
 function FiberNode(tag, pendingProps, key, mode) {
     // Instance
@@ -26,6 +28,16 @@ function FiberNode(tag, pendingProps, key, mode) {
     this.dependencies = null;
 
     this.mode = mode;
+
+    // Effects
+    this.flags = NoFlags;
+    this.subtreeFlags = NoFlags;
+    this.deletions = null;
+
+    this.lanes = NoLanes;
+    this.childLanes = NoLanes;
+
+    this.alternate = null;
 }
 
 // This is a constructor function, rather than a POJO constructor, still
@@ -46,17 +58,15 @@ export const createFiber = function (tag, pendingProps, key, mode) {
     return new FiberNode(tag, pendingProps, key, mode);
 };
 
-
-
 // export function createHostRootFiber(
 //   tag: RootTag,
 //   isStrictMode: boolean,
 //   concurrentUpdatesByDefaultOverride: null | boolean,
-// ): Fiber 
+// ): Fiber
 export function createHostRootFiber(
     tag,
     isStrictMode,
-    concurrentUpdatesByDefaultOverride,
+    concurrentUpdatesByDefaultOverride
 ) {
     let mode;
     if (tag === ConcurrentRoot) {
@@ -72,5 +82,5 @@ export function createHostRootFiber(
     } else {
         mode = NoMode;
     }
-    return createFiber(HostRoot, null, null, mode)
+    return createFiber(HostRoot, null, null, mode);
 }

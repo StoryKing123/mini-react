@@ -289,3 +289,54 @@ export function markRootEntangled(root, entangledLanes) {
         lanes &= ~lane;
     }
 }
+
+/**
+ *
+ * @param {*} root FiberRoot
+ * @param {*} currentTime number
+ */
+export function markStarvedLanesAsExpired(root, currentTime) {
+    // TODO: This gets called every time we yield. We can optimize by storing
+    // the earliest expiration time on the root. Then use that to quickly bail out
+    // of this function.
+
+    const pendingLanes = root.pendingLanes;
+    const suspendedLanes = root.suspendedLanes;
+    const pingedLanes = root.pingedLanes;
+    const expirationTimes = root.expirationTimes;
+
+    // Iterate through the pending lanes and check if we've reached their
+    // expiration time. If so, we'll assume the update is being starved and mark
+    // it as expired to force it to finish.
+    //
+    // We exclude retry lanes because those must always be time sliced, in order
+    // to unwrap uncached promises.
+    // TODO: Write a test for this
+    let lanes = pendingLanes & ~RetryLanes;
+    while (lanes > 0) {
+        const index = pickArbitraryLaneIndex(lanes);
+        const lane = 1 << index;
+
+        const expirationTime = expirationTimes[index];
+        if (expirationTime === NoTimestamp) {
+            // Found a pending lane with no expiration time. If it's not suspended, or
+            // if it's pinged, assume it's CPU-bound. Compute a new expiration time
+            // using the current time.
+            if (
+                (lane & suspendedLanes) === NoLanes ||
+                (lane & pingedLanes) !== NoLanes
+            ) {
+                // Assumes timestamps are monotonically increasing.
+                expirationTimes[index] = computeExpirationTime(
+                    lane,
+                    currentTime
+                );
+            }
+        } else if (expirationTime <= currentTime) {
+            // This lane expired
+            root.expiredLanes |= lane;
+        }
+
+        lanes &= ~lane;
+    }
+}

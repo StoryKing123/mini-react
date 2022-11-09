@@ -1,12 +1,22 @@
 //function initializeUpdateQueue<State>(fiber: Fiber): void
 import { isUnsafeClassRenderPhaseUpdate } from "./reactFiberWorkLoop";
-import { unsafe_markUpdateLaneFromFiberToRoot,enqueueConcurrentClassUpdate } from "./reactFiberConcurrentUpdates";
+import {
+    unsafe_markUpdateLaneFromFiberToRoot,
+    enqueueConcurrentClassUpdate,
+} from "./reactFiberConcurrentUpdates";
 import {
     isTransitionLane,
     mergeLanes,
     intersectLanes,
     markRootEntangled,
+    NoLanes,
 } from "./reactFiberLane";
+
+export const UpdateState = 0;
+export const ReplaceState = 1;
+export const ForceUpdate = 2;
+export const CaptureUpdate = 3;
+
 export function initializeUpdateQueue(fiber) {
     const queue = {
         baseState: fiber.memoizedState,

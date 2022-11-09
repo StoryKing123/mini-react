@@ -1,4 +1,9 @@
-import { mergeLanes } from "./reactFiberLane";
+import { mergeLanes, NoLanes } from "./reactFiberLane";
+import { HostRoot } from "./reactWorkTags";
+
+const concurrentQueues = [];
+let concurrentQueuesIndex = 0;
+let concurrentlyUpdatedLanes = NoLanes;
 /**
  *
  * @param {*} sourceFiber  Fiber
@@ -82,10 +87,10 @@ function enqueueUpdate(fiber, queue, update, lane) {
     // The fiber's `lane` field is used in some places to check if any work is
     // scheduled, to perform an eager bailout, so we need to update it immediately.
     // TODO: We should probably move this to the "shared" queue instead.
+    console.log(fiber);
     fiber.lanes = mergeLanes(fiber.lanes, lane);
     const alternate = fiber.alternate;
     if (alternate !== null) {
         alternate.lanes = mergeLanes(alternate.lanes, lane);
     }
 }
-

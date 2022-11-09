@@ -8,6 +8,7 @@ import {
 import {
     findCurrentUnmaskedContext,
     isContextProvider as isLegacyContextProvider,
+    emptyContextObject,
 } from "./reactFiberContext";
 import { get as getInstance } from "shared/reactInstanceMap";
 import {
