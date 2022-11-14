@@ -1,4 +1,4 @@
-import ReactSharedInternals, { aa } from "shared/reactSharedInternals";
+import ReactSharedInternals from "shared/reactSharedInternals";
 // console.log(aa);
 // console.log(123);
 // console.log(ReactSharedInternals);

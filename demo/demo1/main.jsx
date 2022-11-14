@@ -22,6 +22,7 @@ function App() {
 }
 
 function Child({ i }) {
+    
     return <p>i am child {i}</p>;
 }
 

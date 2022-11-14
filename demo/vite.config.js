@@ -5,6 +5,7 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    hmr: true,
     plugins: [
         react(),
         replace({
@@ -22,7 +23,7 @@ export default defineConfig({
                 find: "react-dom",
                 replacement: path.resolve(__dirname, "../packages/react-dom"),
             },
-            
+
             // {
             //     find: "hostConfig",
             //     replacement: path.resolve(

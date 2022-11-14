@@ -11,7 +11,7 @@ import {
     DiscreteEventPriority,
     getCurrentUpdatePriority,
     setCurrentUpdatePriority,
-} from "./ReactEventPriorities.new";
+} from "./reactEventPriorities";
 import { ImmediatePriority, scheduleCallback } from "./scheduler";
 
 let syncQueue = null;
@@ -30,22 +30,6 @@ export function scheduleSyncCallback(callback) {
     }
 }
 
-export function scheduleLegacySyncCallback(callback) {
-    includesLegacySyncCallbacks = true;
-    scheduleSyncCallback(callback);
-}
-
-export function flushSyncCallbacksOnlyInLegacyMode() {
-    // Only flushes the queue if there's a legacy sync callback scheduled.
-    // TODO: There's only a single type of callback: performSyncOnWorkOnRoot. So
-    // it might make more sense for the queue to be a list of roots instead of a
-    // list of generic callbacks. Then we can have two: one for legacy roots, one
-    // for concurrent roots. And this method would only flush the legacy ones.
-    if (includesLegacySyncCallbacks) {
-        flushSyncCallbacks();
-    }
-}
-
 export function flushSyncCallbacks() {
     if (!isFlushingSyncQueue && syncQueue !== null) {
         // Prevent re-entrance.
@@ -60,7 +44,9 @@ export function flushSyncCallbacks() {
             setCurrentUpdatePriority(DiscreteEventPriority);
             for (; i < queue.length; i++) {
                 let callback = queue[i];
+                // console.log(callback);
                 do {
+                    console.log(callback)
                     callback = callback(isSync);
                 } while (callback !== null);
             }
@@ -80,4 +66,20 @@ export function flushSyncCallbacks() {
         }
     }
     return null;
+}
+
+export function scheduleLegacySyncCallback(callback) {
+    includesLegacySyncCallbacks = true;
+    scheduleSyncCallback(callback);
+}
+
+export function flushSyncCallbacksOnlyInLegacyMode() {
+    // Only flushes the queue if there's a legacy sync callback scheduled.
+    // TODO: There's only a single type of callback: performSyncOnWorkOnRoot. So
+    // it might make more sense for the queue to be a list of roots instead of a
+    // list of generic callbacks. Then we can have two: one for legacy roots, one
+    // for concurrent roots. And this method would only flush the legacy ones.
+    if (includesLegacySyncCallbacks) {
+        flushSyncCallbacks();
+    }
 }

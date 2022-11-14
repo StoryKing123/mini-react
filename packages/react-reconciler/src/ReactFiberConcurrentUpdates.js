@@ -1,5 +1,6 @@
-import { mergeLanes, NoLanes } from "./reactFiberLane";
+import { mergeLanes, NoLanes, NoLane } from "./reactFiberLane";
 import { HostRoot } from "./reactWorkTags";
+import { OffscreenVisible } from "./reactFiberOffscreenComponent";
 
 const concurrentQueues = [];
 let concurrentQueuesIndex = 0;
@@ -94,3 +95,102 @@ function enqueueUpdate(fiber, queue, update, lane) {
         alternate.lanes = mergeLanes(alternate.lanes, lane);
     }
 }
+
+export function finishQueueingConcurrentUpdates() {
+    const endIndex = concurrentQueuesIndex;
+    concurrentQueuesIndex = 0;
+
+    concurrentlyUpdatedLanes = NoLanes;
+
+    let i = 0;
+    while (i < endIndex) {
+        const fiber = concurrentQueues[i];
+        concurrentQueues[i++] = null;
+        const queue = concurrentQueues[i]; //ConcurrentQueue
+        concurrentQueues[i++] = null;
+        const update = concurrentQueues[i]; //ConcurrentUpdate
+        concurrentQueues[i++] = null;
+        const lane = concurrentQueues[i]; //Lane
+        concurrentQueues[i++] = null;
+
+        if (queue !== null && update !== null) {
+            const pending = queue.pending;
+            if (pending === null) {
+                // This is the first update. Create a circular list.
+                update.next = update;
+            } else {
+                update.next = pending.next;
+                pending.next = update;
+            }
+            queue.pending = update;
+        }
+
+        if (lane !== NoLane) {
+            markUpdateLaneFromFiberToRoot(fiber, update, lane);
+        }
+    }
+}
+
+/**
+ *
+ * @param {*} sourceFiber Fiber
+ * @param {*} update ConcurrentUpdate | null
+ * @param {*} lane Lane
+ */
+function markUpdateLaneFromFiberToRoot(sourceFiber, update, lane) {
+    // Update the source fiber's lanes
+    sourceFiber.lanes = mergeLanes(sourceFiber.lanes, lane);
+    let alternate = sourceFiber.alternate;
+    if (alternate !== null) {
+        alternate.lanes = mergeLanes(alternate.lanes, lane);
+    }
+    // Walk the parent path to the root and update the child lanes.
+    let isHidden = false;
+    let parent = sourceFiber.return;
+    let node = sourceFiber;
+    while (parent !== null) {
+        parent.childLanes = mergeLanes(parent.childLanes, lane);
+        alternate = parent.alternate;
+        if (alternate !== null) {
+            alternate.childLanes = mergeLanes(alternate.childLanes, lane);
+        }
+
+        if (parent.tag === OffscreenComponent) {
+            // Check if this offscreen boundary is currently hidden.
+            //
+            // The instance may be null if the Offscreen parent was unmounted. Usually
+            // the parent wouldn't be reachable in that case because we disconnect
+            // fibers from the tree when they are deleted. However, there's a weird
+            // edge case where setState is called on a fiber that was interrupted
+            // before it ever mounted. Because it never mounts, it also never gets
+            // deleted. Because it never gets deleted, its return pointer never gets
+            // disconnected. Which means it may be attached to a deleted Offscreen
+            // parent node. (This discovery suggests it may be better for memory usage
+            // if we don't attach the `return` pointer until the commit phase, though
+            // in order to do that we'd need some other way to track the return
+            // pointer during the initial render, like on the stack.)
+            //
+            // This case is always accompanied by a warning, but we still need to
+            // account for it. (There may be other cases that we haven't discovered,
+            // too.)
+            //offscreenInstance: OffscreenInstance | null
+            const offscreenInstance = parent.stateNode;
+            if (
+                offscreenInstance !== null &&
+                !(offscreenInstance.visibility & OffscreenVisible)
+            ) {
+                isHidden = true;
+            }
+        }
+
+        node = parent;
+        parent = parent.return;
+    }
+
+    if (isHidden && update !== null && node.tag === HostRoot) {
+        const root = node.stateNode; //FiberRoot
+        markHiddenUpdate(root, update, lane);
+    }
+}
+
+
