@@ -26,4 +26,6 @@ function Child({ i }) {
     return <p>i am child {i}</p>;
 }
 
-createRoot(document.getElementById("root")).render(<App />);
+const root = createRoot(document.getElementById("root"))
+console.log(root)
+  // .render(<App />);

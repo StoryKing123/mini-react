@@ -1,28 +1,28 @@
 import { createRootImpl } from "./reactDOMRoot";
-import {
-    getInstanceFromNode,
-    getNodeFromInstance,
-    getFiberCurrentPropsFromNode,
-    getClosestInstanceFromNode,
-} from "./reactDOMComponentTree";
-import {
-    enqueueStateRestore,
-    restoreStateIfNeeded,
-} from "../events/reactDOMControlledComponent";
-import { batchedUpdates } from "react-reconciler/src/ReactFiberReconciler";
+// import {
+//     getInstanceFromNode,
+//     getNodeFromInstance,
+//     getFiberCurrentPropsFromNode,
+//     getClosestInstanceFromNode,
+// } from "./reactDOMComponentTree";
+// import {
+//     enqueueStateRestore,
+//     restoreStateIfNeeded,
+// } from "../events/reactDOMControlledComponent";
+// import { batchedUpdates } from "react-reconciler/src/ReactFiberReconciler";
 
 const Internals = {
-    usingClientEntryPoint: false,
-    // Keep in sync with ReactTestUtils.js.
-    // This is an array for better minification.
-    Events: [
-        getInstanceFromNode,
-        getNodeFromInstance,
-        getFiberCurrentPropsFromNode,
-        enqueueStateRestore,
-        restoreStateIfNeeded,
-        batchedUpdates,
-    ],
+//     usingClientEntryPoint: false,
+//     // Keep in sync with ReactTestUtils.js.
+//     // This is an array for better minification.
+//     Events: [
+//         getInstanceFromNode,
+//         getNodeFromInstance,
+//         getFiberCurrentPropsFromNode,
+//         enqueueStateRestore,
+//         restoreStateIfNeeded,
+//         batchedUpdates,
+//     ],
 };
 
 export function createRoot(container, options) {
