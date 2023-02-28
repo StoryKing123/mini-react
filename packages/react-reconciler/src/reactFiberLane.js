@@ -1,6 +1,3 @@
-
-
-
 export const TotalLanes = 31;
 
 export const NoLanes = /*                        */ 0b0000000000000000000000000000000;
@@ -55,47 +52,47 @@ export const OffscreenLane = /*                   */ 0b1000000000000000000000000
 // This function is used for the experimental timeline (react-devtools-timeline)
 // It should be kept in sync with the Lanes values above.
 export function getLabelForLane(lane) {
-    if (enableSchedulingProfiler) {
-        if (lane & SyncHydrationLane) {
-            return 'SyncHydrationLane';
-        }
-        if (lane & SyncLane) {
-            return 'Sync';
-        }
-        if (lane & InputContinuousHydrationLane) {
-            return 'InputContinuousHydration';
-        }
-        if (lane & InputContinuousLane) {
-            return 'InputContinuous';
-        }
-        if (lane & DefaultHydrationLane) {
-            return 'DefaultHydration';
-        }
-        if (lane & DefaultLane) {
-            return 'Default';
-        }
-        if (lane & TransitionHydrationLane) {
-            return 'TransitionHydration';
-        }
-        if (lane & TransitionLanes) {
-            return 'Transition';
-        }
-        if (lane & RetryLanes) {
-            return 'Retry';
-        }
-        if (lane & SelectiveHydrationLane) {
-            return 'SelectiveHydration';
-        }
-        if (lane & IdleHydrationLane) {
-            return 'IdleHydration';
-        }
-        if (lane & IdleLane) {
-            return 'Idle';
-        }
-        if (lane & OffscreenLane) {
-            return 'Offscreen';
-        }
+  if (enableSchedulingProfiler) {
+    if (lane & SyncHydrationLane) {
+      return "SyncHydrationLane";
     }
+    if (lane & SyncLane) {
+      return "Sync";
+    }
+    if (lane & InputContinuousHydrationLane) {
+      return "InputContinuousHydration";
+    }
+    if (lane & InputContinuousLane) {
+      return "InputContinuous";
+    }
+    if (lane & DefaultHydrationLane) {
+      return "DefaultHydration";
+    }
+    if (lane & DefaultLane) {
+      return "Default";
+    }
+    if (lane & TransitionHydrationLane) {
+      return "TransitionHydration";
+    }
+    if (lane & TransitionLanes) {
+      return "Transition";
+    }
+    if (lane & RetryLanes) {
+      return "Retry";
+    }
+    if (lane & SelectiveHydrationLane) {
+      return "SelectiveHydration";
+    }
+    if (lane & IdleHydrationLane) {
+      return "IdleHydration";
+    }
+    if (lane & IdleLane) {
+      return "Idle";
+    }
+    if (lane & OffscreenLane) {
+      return "Offscreen";
+    }
+  }
 }
 
 export const NoTimestamp = -1;
@@ -104,99 +101,106 @@ let nextTransitionLane = TransitionLane1;
 let nextRetryLane = RetryLane1;
 
 function getHighestPriorityLanes(lanes) {
-    if (enableUnifiedSyncLane) {
-        const pendingSyncLanes = lanes & SyncUpdateLanes;
-        if (pendingSyncLanes !== 0) {
-            return pendingSyncLanes;
-        }
+  if (enableUnifiedSyncLane) {
+    const pendingSyncLanes = lanes & SyncUpdateLanes;
+    if (pendingSyncLanes !== 0) {
+      return pendingSyncLanes;
     }
-    switch (getHighestPriorityLane(lanes)) {
-        case SyncHydrationLane:
-            return SyncHydrationLane;
-        case SyncLane:
-            return SyncLane;
-        case InputContinuousHydrationLane:
-            return InputContinuousHydrationLane;
-        case InputContinuousLane:
-            return InputContinuousLane;
-        case DefaultHydrationLane:
-            return DefaultHydrationLane;
-        case DefaultLane:
-            return DefaultLane;
-        case TransitionHydrationLane:
-            return TransitionHydrationLane;
-        case TransitionLane1:
-        case TransitionLane2:
-        case TransitionLane3:
-        case TransitionLane4:
-        case TransitionLane5:
-        case TransitionLane6:
-        case TransitionLane7:
-        case TransitionLane8:
-        case TransitionLane9:
-        case TransitionLane10:
-        case TransitionLane11:
-        case TransitionLane12:
-        case TransitionLane13:
-        case TransitionLane14:
-        case TransitionLane15:
-        case TransitionLane16:
-            return lanes & TransitionLanes;
-        case RetryLane1:
-        case RetryLane2:
-        case RetryLane3:
-        case RetryLane4:
-            return lanes & RetryLanes;
-        case SelectiveHydrationLane:
-            return SelectiveHydrationLane;
-        case IdleHydrationLane:
-            return IdleHydrationLane;
-        case IdleLane:
-            return IdleLane;
-        case OffscreenLane:
-            return OffscreenLane;
-        default:
-            if (__DEV__) {
-                console.error(
-                    'Should have found matching lanes. This is a bug in React.',
-                );
-            }
-            // This shouldn't be reachable, but as a fallback, return the entire bitmask.
-            return lanes;
-    }
+  }
+  switch (getHighestPriorityLane(lanes)) {
+    case SyncHydrationLane:
+      return SyncHydrationLane;
+    case SyncLane:
+      return SyncLane;
+    case InputContinuousHydrationLane:
+      return InputContinuousHydrationLane;
+    case InputContinuousLane:
+      return InputContinuousLane;
+    case DefaultHydrationLane:
+      return DefaultHydrationLane;
+    case DefaultLane:
+      return DefaultLane;
+    case TransitionHydrationLane:
+      return TransitionHydrationLane;
+    case TransitionLane1:
+    case TransitionLane2:
+    case TransitionLane3:
+    case TransitionLane4:
+    case TransitionLane5:
+    case TransitionLane6:
+    case TransitionLane7:
+    case TransitionLane8:
+    case TransitionLane9:
+    case TransitionLane10:
+    case TransitionLane11:
+    case TransitionLane12:
+    case TransitionLane13:
+    case TransitionLane14:
+    case TransitionLane15:
+    case TransitionLane16:
+      return lanes & TransitionLanes;
+    case RetryLane1:
+    case RetryLane2:
+    case RetryLane3:
+    case RetryLane4:
+      return lanes & RetryLanes;
+    case SelectiveHydrationLane:
+      return SelectiveHydrationLane;
+    case IdleHydrationLane:
+      return IdleHydrationLane;
+    case IdleLane:
+      return IdleLane;
+    case OffscreenLane:
+      return OffscreenLane;
+    default:
+      if (__DEV__) {
+        console.error(
+          "Should have found matching lanes. This is a bug in React."
+        );
+      }
+      // This shouldn't be reachable, but as a fallback, return the entire bitmask.
+      return lanes;
+  }
 }
 
 export function getNextLanes(root, wipLanes) {
-    // Early bailout if there's no pending work left.
-    const pendingLanes = root.pendingLanes;
-    if (pendingLanes === NoLanes) {
-        return NoLanes;
-    }
+  // Early bailout if there's no pending work left.
+  const pendingLanes = root.pendingLanes;
+  if (pendingLanes === NoLanes) {
+    return NoLanes;
+  }
 
-    let nextLanes = NoLanes;
+  let nextLanes = NoLanes;
 
-    const suspendedLanes = root.suspendedLanes;
-    const pingedLanes = root.pingedLanes;
+  const suspendedLanes = root.suspendedLanes;
+  const pingedLanes = root.pingedLanes;
 }
 export function createLaneMap(initial) {
-    // Intentionally pushing one by one.
-    // https://v8.dev/blog/elements-kinds#avoid-creating-holes
-    const laneMap = [];
-    for (let i = 0; i < TotalLanes; i++) {
-        laneMap.push(initial);
-    }
-    return laneMap;
+  // Intentionally pushing one by one.
+  // https://v8.dev/blog/elements-kinds#avoid-creating-holes
+  const laneMap = [];
+  for (let i = 0; i < TotalLanes; i++) {
+    laneMap.push(initial);
+  }
+  return laneMap;
 }
 
-
 export function getHighestPriorityLane(lanes) {
-    return lanes & -lanes;
+  return lanes & -lanes;
 }
 
 export function pickArbitraryLane(lanes) {
-    // This wrapper function gets inlined. Only exists so to communicate that it
-    // doesn't matter which bit is selected; you can pick any bit without
-    // affecting the algorithms where its used. Here I'm using
-    // getHighestPriorityLane because it requires the fewest operations.
-    return getHighestPriorityLane(lanes);
+  // This wrapper function gets inlined. Only exists so to communicate that it
+  // doesn't matter which bit is selected; you can pick any bit without
+  // affecting the algorithms where its used. Here I'm using
+  // getHighestPriorityLane because it requires the fewest operations.
+  return getHighestPriorityLane(lanes);
+}
+
+export function isTransitionLane(lane) {
+  return (lane & TransitionLanes) !== NoLanes;
+}
+
+export function includesNonIdleWork(lanes) {
+  return (lanes & NonIdleLanes) !== NoLanes;
 }

@@ -5,36 +5,36 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    hmr: true,
-    plugins: [
-        react(),
-        replace({
-            __LOG__: true,
-            preventAssignment: true,
-        }),
-    ],
-    resolve: {
-        alias: [
-            {
-                find: "react",
-                replacement: path.resolve(__dirname, "../packages/react"),
-            },
-            {
-                find: "react-dom",
-                replacement: path.resolve(__dirname, "../packages/react-dom"),
-            },
+  hmr: true,
+  plugins: [
+    react(),
+    replace({
+      __LOG__: true,
+      preventAssignment: true,
+    }),
+  ],
+  resolve: {
+    alias: [
+      {
+        find: "react",
+        replacement: path.resolve(__dirname, "../packages/react"),
+      },
+      {
+        find: "react-dom",
+        replacement: path.resolve(__dirname, "../packages/react-dom"),
+      },
 
-            // {
-            //     find: "hostConfig",
-            //     replacement: path.resolve(
-            //         __dirname,
-            //         "../packages/react-dom/src/hostConfig.ts"
-            //     ),
-            // },
-        ],
-    },
-    optimizeDeps: {
-        // force: true
-        exclude: ["react", "react-dom"],
-    },
+      {
+        find: "hostConfig",
+        replacement: path.resolve(
+          __dirname,
+          "../packages/react-dom/src/hostConfig.js"
+        ),
+      },
+    ],
+  },
+  optimizeDeps: {
+    // force: true
+    exclude: ["react", "react-dom"],
+  },
 });

@@ -1,5 +1,5 @@
 import { DefaultEventPriority } from 'react-reconciler/src/reactEventPriorities';
-import { getEventPriority } from '../events/reactDOMEventListener'
+import { getEventPriority } from './events/reactDOMEventListener'
 
 
 
