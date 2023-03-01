@@ -44,11 +44,11 @@ export function cloneupdatequeue(current, workinprogress) {
   }
 }
 
-export function createupdate(lane) {
+export function createUpdate(lane) {
   const update = {
     lane,
 
-    tag: updatestate,
+    tag: UpdateState,
     payload: null,
     callback: null,
 
@@ -58,8 +58,8 @@ export function createupdate(lane) {
 }
 
 export function enqueueUpdate(fiber, update, lane) {
-  const updatequeue = fiber.updatequeue;
-  if (updatequeue === null) {
+  const updateQueue = fiber.updateQueue;
+  if (updateQueue === null) {
     // only occurs if the fiber has been unmounted.
     return null;
   }

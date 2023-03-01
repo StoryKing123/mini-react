@@ -5,7 +5,7 @@ import {
   StrictEffectsMode,
 } from "./reactTypeOfMode";
 import {} from "./reactWorkTags";
-import { ConcurrentRoot, LegacyRoot } from "./ReactRootTags";
+import { ConcurrentRoot, LegacyRoot } from "./reactRootTags";
 import {
   getCurrentUpdatePriority,
   // getCurrentEventPriority,
@@ -27,7 +27,7 @@ import {
   Visibility,
   // MountPassiveDev,
   // MountLayoutDev,
-} from "./ReactFiberFlags";
+} from "./reactFiberFlags";
 import {
   // Aliased because `act` will override and push to an internal queue
   scheduleCallback as Scheduler_scheduleCallback,
@@ -39,7 +39,7 @@ import {
   UserBlockingPriority as UserBlockingSchedulerPriority,
   NormalPriority as NormalSchedulerPriority,
   IdlePriority as IdleSchedulerPriority,
-} from "./Scheduler";
+} from "./scheduler";
 
 export const NoContext = /*             */ 0b000;
 const BatchedContext = /*               */ 0b001;

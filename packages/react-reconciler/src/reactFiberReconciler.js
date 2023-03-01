@@ -1,6 +1,6 @@
 // import { hydrate } from "react-dom";
 import { createFiberRoot } from "./reactFiberRoot";
-import { get as getInstance } from "shared/ReactInstanceMap";
+import { get as getInstance } from "shared/reactInstanceMap";
 import { createUpdate, enqueueUpdate } from "./reactFiberClassUpdateQueue";
 import { requestEventTime,requestUpdateLane } from "./reactFiberWorkLoop";
 import { entangleTransitions } from "./reactFiberClassUpdateQueue";
